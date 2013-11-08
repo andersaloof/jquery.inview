@@ -1,7 +1,7 @@
 /**
- * author Christopher Blum
+ * author Anders S. Oefsdahl
  *    - based on the idea of Remy Sharp, http://remysharp.com/2009/01/26/element-in-view-event-plugin/
- *    - forked from http://github.com/zuk/jquery.inview/
+ *    - forked from http://github.com/protonet/jquery.inview
  */
 (function ($) {
   var inviewObjects = {}, viewportSize, viewportOffset,
@@ -72,7 +72,7 @@
             visiblePartX,
             visiblePartY,
             visiblePartsMerged;
-        
+    
         // Don't ask me why because I haven't figured out yet:
         // viewportOffset and viewportSize are sometimes suddenly null in Firefox 5.
         // Even though it sounds weird:
@@ -82,22 +82,45 @@
           return;
         }
         
-        if (elementOffset.top + elementSize.height > viewportOffset.top &&
-            elementOffset.top < viewportOffset.top + viewportSize.height &&
-            elementOffset.left + elementSize.width > viewportOffset.left &&
-            elementOffset.left < viewportOffset.left + viewportSize.width) {
-          visiblePartX = (viewportOffset.left > elementOffset.left ?
-            'right' : (viewportOffset.left + viewportSize.width) < (elementOffset.left + elementSize.width) ?
-            'left' : 'both');
-          visiblePartY = (viewportOffset.top > elementOffset.top ?
-            'bottom' : (viewportOffset.top + viewportSize.height) < (elementOffset.top + elementSize.height) ?
-            'top' : 'both');
-          visiblePartsMerged = visiblePartX + "-" + visiblePartY;
-          if (!inView || inView !== visiblePartsMerged) {
-            $element.data('inview', visiblePartsMerged).trigger('inview', [true, visiblePartX, visiblePartY]);
+        if($element.data('inview-percentage-y') || $element.data('inview-percentage-x')){
+          var percentX = $element.data('inview-percentage-x') ? parseInt($element.data('inview-percentage-x'), 10)/100 : 0;
+          var percentY = $element.data('inview-percentage-y') ? parseInt($element.data('inview-percentage-y'), 10)/100 : 0;
+          if (elementOffset.top + elementSize.height > viewportOffset.top &&
+              elementOffset.top < viewportOffset.top + viewportSize.height &&
+              elementOffset.left + elementSize.width > viewportOffset.left &&
+              elementOffset.left < viewportOffset.left + viewportSize.width) {
+            var visibleSizeX = (viewportSize.width - Math.abs(elementOffset.left - viewportOffset.left)) / elementSize.width;
+            var visibleSizeY = (viewportSize.height - Math.abs(elementOffset.top - viewportOffset.top)) / elementSize.height;
+            
+            if(visibleSizeX >= percentX && visibleSizeY >= percentY){
+              visiblePartsMerged = percentX + "-" + percentY;
+              if (!inView || inView !== visiblePartsMerged) {
+                $element.data('inview', visiblePartsMerged).trigger('inview', [true, percentX, percentY]);
+              }
+            } else if (inView){
+              $element.data('inview', false).trigger('inview', [false]);
+            }
+          } else if (inView) {
+            $element.data('inview', false).trigger('inview', [false]);
           }
-        } else if (inView) {
-          $element.data('inview', false).trigger('inview', [false]);
+        }else{
+          if (elementOffset.top + elementSize.height > viewportOffset.top &&
+              elementOffset.top < viewportOffset.top + viewportSize.height &&
+              elementOffset.left + elementSize.width > viewportOffset.left &&
+              elementOffset.left < viewportOffset.left + viewportSize.width) {
+            visiblePartX = (viewportOffset.left > elementOffset.left ?
+              'right' : (viewportOffset.left + viewportSize.width) < (elementOffset.left + elementSize.width) ?
+              'left' : 'both');
+            visiblePartY = (viewportOffset.top > elementOffset.top ?
+              'bottom' : (viewportOffset.top + viewportSize.height) < (elementOffset.top + elementSize.height) ?
+              'top' : 'both');
+            visiblePartsMerged = visiblePartX + "-" + visiblePartY;
+            if (!inView || inView !== visiblePartsMerged) {
+              $element.data('inview', visiblePartsMerged).trigger('inview', [true, visiblePartX, visiblePartY]);
+            }
+          } else if (inView) {
+            $element.data('inview', false).trigger('inview', [false]);
+          }
         }
       }
     }
