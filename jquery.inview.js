@@ -125,7 +125,6 @@
                             )
                     );
             var visiblePercentageY = visibleHeight / elementSize.height;
-            console.log($element.attr('id'), visibleWidth, visibleHeight);
             
             if (visiblePercentageX >= percentX && visiblePercentageY >= percentY) {
               if (!inView || inView !== visiblePartsMerged) {
