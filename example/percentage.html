@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>jquery.inview - Example - Percentage</title>
+  <meta name="viewport" content="initial-scale=1.0, width=device-width, height=device-height">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <script src="../jquery.inview.js"></script>
+  <style>
+    html {
+      width: 100%;
+      height: 100%;
+    }
+    body {
+      font-family: Arial, Verdana, sans-serif;
+      font-size: 12px;
+      position: relative;
+      width: 300%;
+      height: 300%;
+    }
+    
+    .inview {
+      width: 400px;
+      height: 400px;
+      background: #ccc;
+      color: black;
+      position: absolute;
+      text-align: center;
+      font-size: 18px;
+    }
+    
+    #vertical {
+      top: 50%;
+      left: 0%;
+      background: linear-gradient(to bottom, #ccc 0%, #ccc 50%, #888 50%, #888 100%);
+    }
+    #vertical.visible {
+      background: linear-gradient(to bottom, lightblue 0%, lightblue 50%, blue 50%, blue 100%);
+    }
+    
+    #horizontal {
+      left: 50%;
+      top: 0%;
+      background: linear-gradient(to right, #ccc 0%, #ccc 50%, #888 50%, #888 100%);
+    }
+    #horizontal.visible {
+      background: linear-gradient(to right, lightgreen 0%, lightgreen 50%, green 50%, green 100%);
+    }
+    
+    #both {
+      left: 50%;
+      top: 50%;
+      background-color: #eee;
+      background-image: linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black), 
+                        linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black);
+      background-size: 100px 100px;
+      background-position:0 0, 50px 50px
+    }
+    #both.visible {
+      background-color: red;
+      background-image: linear-gradient(45deg, blue 25%, transparent 25%, transparent 75%, blue 75%, blue), 
+                        linear-gradient(45deg, blue 25%, transparent 25%, transparent 75%, blue 75%, blue);
+    }
+    
+  </style>
+</head>
+<body>
+  <p id="top">
+    This example show the percentage based inview trigger.
+  </p>
+  
+  <p>
+    Scroll down, right or in an angle to see how the event isn't fired until parts of the element in visible.
+  </p>
+  
+  <div id="horizontal" data-inview-percentage-x="50" class="inview">
+    My gradient turns green when 50% of me horizontally is visible.
+  </div>
+  
+  <div id="vertical" data-inview-percentage-y="50" class="inview">
+    My gradient turns blue when 50% of me vertically is visible.
+  </div>
+  
+  <div id="both" data-inview-percentage-x="50" data-inview-percentage-y="50" class="inview">
+    My pattern gets colorized when 50% of me in both directions is visible.
+  </div>
+
+  <script>
+    $('.inview').bind('inview', function(event, visible, visiblePartX, visiblePartY) {
+      if (visible) {
+        $(event.target).addClass('visible');
+      } else {
+        $(event.target).removeClass('visible');
+      }
+    });
+  </script>
+</body>
+</html>
